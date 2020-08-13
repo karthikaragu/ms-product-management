@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: ms-product-management
+  jpa:
+    database: MYSQL
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLInnoDBDialect
+  cloud:
+    discovery:
+      enabled: false
+    loadbalancer:
+      ribbon:
+        enabled: false
+  data:
+    rest:
+      detection-strategy: annotated
+
+auto-spare:
+  scm:
+    datasource:
+      jdbc-url: jdbc:mysql://localhost:3306/autosparescm
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8021
+  servlet:
+    context-path: /productmanagementservices
+
+springdoc:
+  api-docs:
+    enabled: true
+
+
+
+
+
