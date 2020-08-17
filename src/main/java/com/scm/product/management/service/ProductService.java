@@ -1,5 +1,7 @@
 package com.scm.product.management.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.scm.product.management.client.UserClient;
 import com.scm.product.management.dto.ErrorDTO;
 import com.scm.product.management.dto.ProductDTO;
 import com.scm.product.management.dto.ProductResponseDTO;
@@ -27,7 +29,7 @@ public class ProductService {
 
     private ProductRepository productRepository;
     private ProductDTOMapper mapper;
-    private UserService userService;
+    private UserClient userClient;
 
     public ProductResponseDTO createProduct(ProductDTO productDTO){
         Product product = null;
@@ -91,7 +93,7 @@ public class ProductService {
     }
 
     private void validateProduct(ProductDTO productDTO,List<ErrorDTO> errorList){
-        if(userService.checkUserExists(productDTO.getVendorId())){
+        if(checkUserExists(productDTO.getVendorId())){
             Product existingProduct = productRepository.findByProductNameAndVendorId(productDTO.getProductName(),
                     productDTO.getVendorId());
             if(Objects.nonNull(existingProduct)){
@@ -100,8 +102,11 @@ public class ProductService {
         }else{
             errorList.add(retrieveErrorDTO("Invalid Vendor Id for the Product", "PM-ER03"));
         }
+    }
 
-
+    @HystrixCommand()
+    private boolean checkUserExists(Integer userId){
+       return  userClient.checkUserExists(userId);
     }
 
     private void populateRating(Product product,RatingDTO ratingDTO){

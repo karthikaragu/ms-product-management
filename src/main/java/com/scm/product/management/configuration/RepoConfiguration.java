@@ -14,6 +14,7 @@ public class RepoConfiguration implements RepositoryRestConfigurer {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration restConfig) {
         ExposureConfiguration config = restConfig.getExposureConfiguration();
+        restConfig.exposeIdsFor(Product.class,Rating.class);
         configureExposure(config,Product.class,HttpMethod.PATCH,HttpMethod.POST,HttpMethod.PUT,HttpMethod.DELETE);
         configureExposure(config, Rating.class,HttpMethod.PATCH,HttpMethod.POST,HttpMethod.PUT,HttpMethod.DELETE);
     }

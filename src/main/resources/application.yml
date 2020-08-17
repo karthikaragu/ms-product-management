@@ -9,10 +9,10 @@ spring:
         dialect: org.hibernate.dialect.MySQLInnoDBDialect
   cloud:
     discovery:
-      enabled: false
+      enabled: true
     loadbalancer:
       ribbon:
-        enabled: false
+        enabled: true
   data:
     rest:
       detection-strategy: annotated
@@ -32,7 +32,29 @@ springdoc:
   api-docs:
     enabled: true
 
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone : http://localhost:8041/eureka/
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
 
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 5000
 
-
+ribbon:
+  ConnectTimeout: 5000
+  ReadTimeout: 5000
