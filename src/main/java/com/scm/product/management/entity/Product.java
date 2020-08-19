@@ -45,7 +45,7 @@ public class Product implements Serializable {
     @Column(name = "productdescription", nullable = false)
     private String productDescription;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Rating> ratings;
 
 }

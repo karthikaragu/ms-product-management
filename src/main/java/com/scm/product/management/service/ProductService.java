@@ -1,6 +1,5 @@
 package com.scm.product.management.service;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.scm.product.management.client.UserClient;
 import com.scm.product.management.dto.ErrorDTO;
 import com.scm.product.management.dto.ProductDTO;
@@ -75,7 +74,7 @@ public class ProductService {
                 populateRating(product, ratingDTO);
                 productRepository.save(product);
             }
-        }catch(DataIntegrityViolationException e){
+        }catch(Exception e){
             log.error("Error occured while Saving Rating",e);
             throw new ProductModifyException(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -93,20 +92,15 @@ public class ProductService {
     }
 
     private void validateProduct(ProductDTO productDTO,List<ErrorDTO> errorList){
-        if(checkUserExists(productDTO.getVendorId())){
+        if(userClient.checkUserExists(productDTO.getVendorId())){
             Product existingProduct = productRepository.findByProductNameAndVendorId(productDTO.getProductName(),
                     productDTO.getVendorId());
             if(Objects.nonNull(existingProduct)){
                 errorList.add(retrieveErrorDTO("Product Already Exists", "PM-ER01"));
             }
         }else{
-            errorList.add(retrieveErrorDTO("Invalid Vendor Id for the Product", "PM-ER03"));
+            errorList.add(retrieveErrorDTO("Invalid Vendor Id for the Product or User service unavailable", "PM-ER03"));
         }
-    }
-
-    @HystrixCommand()
-    private boolean checkUserExists(Integer userId){
-       return  userClient.checkUserExists(userId);
     }
 
     private void populateRating(Product product,RatingDTO ratingDTO){
