@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.TransactionSystemException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -67,6 +66,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @Sql({"/data.sql"})
     public void createProduct_duplicateProduct(){
         ProductDTO requestDto = fetchProductDTO();
         requestDto.setProductName("Brakeshoe");
@@ -112,11 +112,12 @@ public class ProductServiceTest {
         ProductDTO requestDto = fetchProductDTO();
         requestDto.setStock(null);
         requestDto.setProductName(null);
-        Assert.assertThrows(TransactionSystemException.class,
+        Assert.assertThrows(ProductModifyException.class,
                 () -> productService.editProduct(requestDto,1));
     }
 
     @Test
+    @Sql({"/data.sql"})
     public void rateProduct_happyFlow(){
         RatingDTO requestDto = fetchRatingDTO();
         ProductResponseDTO responseDTO = productService.rateProduct(requestDto);
@@ -148,8 +149,15 @@ public class ProductServiceTest {
     }
 
     @Test
+    @Sql({"/data.sql"})
     public void deleteProduct_happyFlow(){
-        Assert.assertEquals("Product Deleted Successfully",productService.deleteProduct(2));
+        Assert.assertEquals("Product Deleted Successfully",productService.deleteProduct(1));
+    }
+
+    @Test
+    public void deleteProduct_exceptionFlow(){
+        Assert.assertThrows(ProductModifyException.class,
+                () -> productService.deleteProduct(10));
     }
 
     private ProductDTO fetchProductDTO(){

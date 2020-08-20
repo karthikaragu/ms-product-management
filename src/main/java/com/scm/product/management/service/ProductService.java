@@ -56,7 +56,7 @@ public class ProductService {
             }else{
                 productRepository.save(mapper.convertProductDTOToModifyProduct(productDTO, product));
             }
-        }catch(DataIntegrityViolationException e){
+        }catch(Exception e){
             log.error("Error occured while Editing Product",e);
             throw new ProductModifyException(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -84,7 +84,7 @@ public class ProductService {
     public String deleteProduct(Integer productId){
        try{
            productRepository.deleteById(productId);
-       }catch(DataIntegrityViolationException e){
+       }catch(Exception e){
             log.error("Error occured while Deleting Product",e);
             throw new ProductModifyException(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

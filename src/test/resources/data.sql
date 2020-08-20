@@ -1,3 +1,5 @@
+DELETE FROM `autosparescm`.`rating`;
+
 DELETE FROM `autosparescm`.`product`;
 
 INSERT INTO `autosparescm`.`product`
